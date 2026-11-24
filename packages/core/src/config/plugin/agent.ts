@@ -7,6 +7,8 @@ import path from "path"
 import { Effect, Result, SchemaIssue, SchemaParser } from "effect"
 import { Agent } from "../../agent.js"
 import { Config } from "../../config.js"
+import * as GameCodeLicense from "../../gamecode/license.js"
+import { isCustomAgent } from "../../gamecode/prompt-loader.js"
 import { ConfigMarkdown } from "../markdown.js"
 import { ConfigEntryObserver } from "./entry-observer.js"
 import { FSUtil } from "@opencode/util/fs-util"
@@ -71,8 +73,13 @@ export const Plugin = define({
         editor.update(current.id, (agent) => agent.permissions.push(...permissions))
       }
 
+      // GameCode gate: custom agents register only when the license is
+      // active and a Zen workspace key is saved. Without a valid key only
+      // the built-in Build and Plan agents remain.
+      const gcAllowed = new Set(GameCodeLicense.gateState().allowed)
       for (const document of loaded.documents) {
         for (const [id, item] of Object.entries(document.info.agents ?? {})) {
+          if (isCustomAgent(id) && !gcAllowed.has(id)) continue
           const agentID = Agent.ID.make(id)
           if (item.disabled) {
             editor.remove(agentID)

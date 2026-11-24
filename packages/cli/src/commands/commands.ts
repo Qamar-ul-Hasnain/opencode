@@ -345,10 +345,8 @@ const Root = Spec.make(typeof OPENCODE_CLI_NAME === "string" ? OPENCODE_CLI_NAME
         }),
       ],
     }),
-    Spec.make("models", {
-      description: "List all available models",
-      globalFlags: ServerFlags,
-    }),
+    // GameCode: the "models" command is removed. Model selection is disabled;
+    // agents switch only with Tab and each agent has its fixed model.
     Spec.make("stats", {
       description: "Show shareable usage statistics",
       globalFlags: ServerFlags,

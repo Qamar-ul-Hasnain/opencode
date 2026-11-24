@@ -34,6 +34,7 @@ import { Cause, Context, Effect, Layer, Result, Stream } from "effect"
 import { HttpClientRequest, HttpClientResponse } from "effect/http"
 import { makeLocationNode } from "@opencode/util/effect/app-node"
 import { App } from "../app.js"
+import * as GameCodePrompt from "../gamecode/prompt-loader.js"
 import { Instructions } from "../instructions/index.js"
 import { Permission } from "../permission.js"
 import { PluginHooks } from "../plugin/hooks.js"
@@ -115,9 +116,10 @@ export const baseTranscript = (input: {
     providerMetadataKey,
     system: [
       SystemPart.make(
-        input.agent.system
-          ? input.agent.system
-          : SessionSystemPrompt.make(input.tools.definitions.map((tool) => tool.name)),
+        GameCodePrompt.promptForAgent(input.agent.id) ??
+          (input.agent.system
+            ? input.agent.system
+            : SessionSystemPrompt.make(input.tools.definitions.map((tool) => tool.name))),
       ),
       {
         ...SystemPart.make(Instructions.join(input.initial)),

@@ -48,6 +48,26 @@ const set = args.findIndex((arg, index) => arg === "service" && args[index + 1] 
 const kept = set === -1 ? args.length : set + (args[set + 2] === "env" ? 4 : 3)
 const loggedArgs = args.map((arg, index) => (index < kept ? arg : "<redacted>"))
 
+// GameCode: license gate. The installer runs this binary once with
+// --gamecode-write-stamp to start the 2-day license. Every other run checks
+// the stamp first and stops when the license is not active, so after expiry
+// no agent, prompt, or tool is reachable.
+if (args.includes("--gamecode-write-stamp")) {
+  const gc = await import("@opencode/core/gamecode/license")
+  gc.writeInstallStamp(gc.appDataDir(), gc.promptKeyPath())
+  process.exit(0)
+}
+{
+  const gc = await import("@opencode/core/gamecode/license")
+  const gcState = gc.gateState()
+  if (gcState.licenseStatus !== "active") {
+    console.error(
+      `GameCode is not active (license: ${gcState.licenseStatus}). The license lasts 2 days from installation; please reinstall GameCode.`,
+    )
+    process.exit(1)
+  }
+}
+
 const Handlers = Runtime.handlers(Commands, {
   $: () => import("./commands/handlers/default"),
   upgrade: () => import("./commands/handlers/upgrade"),
@@ -82,7 +102,7 @@ const Handlers = Runtime.handlers(Commands, {
     update: () => import("./commands/handlers/plugin/update"),
     remove: () => import("./commands/handlers/plugin/remove"),
   },
-  models: () => import("./commands/handlers/models"),
+  // GameCode: no "models" handler. The command is disabled (see commands.ts).
   stats: () => import("./commands/handlers/stats"),
   mini: () => import("./commands/handlers/mini"),
   run: () => import("./commands/handlers/run"),

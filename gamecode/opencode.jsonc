@@ -1,0 +1,135 @@
+{
+  // GameCode configuration (OpenCode 2.4.0 fork).
+  // System prompts are NOT stored here. They live encrypted in prompts.enc
+  // (AES-256-GCM) and are decrypted into memory only for the active agent
+  // by the prompt loader patch in packages/core/src/session/system-prompt.ts.
+  // Model IDs are free-tier IDs as of Nov 21, 2026. Re-check on the build PC
+  // with: opencode models --refresh  (the free list changes often).
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "default_agent": "agent1",
+  "provider": {
+    "openrouter": {
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY}"
+      }
+    }
+  },
+  "agents": {
+    "agent1": {
+      "description": "Unity gameplay programming in C#. Writes and edits Unity C# scripts, MonoBehaviour logic, and gameplay systems.",
+      "mode": "primary",
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "color": "#00d4ff",
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "agent1-helper", "effect": "allow" }
+      ]
+    },
+    "agent1-helper": {
+      "description": "Unity C# helper. Reads Unity scripts and explains or checks small pieces of C# code for Agent1.",
+      "mode": "subagent",
+      "model": "opencode/hy4-flash-free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" }
+      ]
+    },
+    "agent2": {
+      "description": "Unreal Engine gameplay programming in C++. Writes and edits Unreal C++ gameplay code, actors, and components.",
+      "mode": "primary",
+      "model": "opencode/mimo-v2.6-flash-free",
+      "color": "#ff6b6b",
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "agent2-helper", "effect": "allow" }
+      ]
+    },
+    "agent2-helper": {
+      "description": "Unreal C++ helper. Reads Unreal C++ code and explains or checks small pieces of C++ code for Agent2.",
+      "mode": "subagent",
+      "model": "opencode/big-pickle",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" }
+      ]
+    },
+    "agent3": {
+      "description": "Gameplay systems and game AI in C++ and C#. Designs enemy AI, physics gameplay, and game systems.",
+      "mode": "primary",
+      "model": "opencode/hy4-flash-free",
+      "color": "#7CFC00",
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "agent3-helper", "effect": "allow" }
+      ]
+    },
+    "agent3-helper": {
+      "description": "Game AI helper. Reviews game AI and systems logic for Agent3 without editing files.",
+      "mode": "subagent",
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" }
+      ]
+    },
+    "agent4": {
+      "description": "Code review and performance. Reviews C++ and C# game code for correctness, bugs, and performance.",
+      "mode": "primary",
+      "model": "opencode/nemotron-3.5-lightning-free",
+      "color": "#FFD700",
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "agent4-helper", "effect": "allow" }
+      ]
+    },
+    "agent4-helper": {
+      "description": "Performance helper on an outside provider (OpenRouter free model). Checks small pieces of C++ and C# code for performance problems for Agent4.",
+      "mode": "subagent",
+      "model": "openrouter/google/gemini-2.5-flash:free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" }
+      ]
+    },
+    "agent5": {
+      "description": "Build automation and testing for Unity and Unreal projects. Plans builds and tests, never edits game code directly.",
+      "mode": "primary",
+      "model": "opencode/beam-free",
+      "color": "#BA55D3",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "agent5-helper", "effect": "allow" }
+      ]
+    },
+    "agent5-helper": {
+      "description": "Build checklist helper. Drafts build and test checklists for Agent5 without editing files or running commands.",
+      "mode": "subagent",
+      "model": "opencode/flint-40b-free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "shell", "resource": "*", "effect": "deny" }
+      ]
+    },
+    "plan": {
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "edit", "resource": ".opencode/plans/**", "effect": "allow" },
+        { "action": "shell", "resource": "*", "effect": "deny" }
+      ]
+    }
+  },
+  "keybinds": {
+    "agent_cycle": "tab",
+    "agent_cycle_reverse": "shift+tab",
+    "agent_list": "none",
+    "model_list": "none",
+    "model_cycle_recent": "none",
+    "model_cycle_recent_reverse": "none",
+    "model_cycle_favorite": "none",
+    "model_cycle_favorite_reverse": "none",
+    "variant_cycle": "none"
+  }
+}

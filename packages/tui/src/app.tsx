@@ -75,7 +75,7 @@ import { DialogHighlights } from "./component/dialog-highlights"
 import { claim } from "./util/highlights"
 import { DialogThemeList } from "./component/dialog-theme-list"
 import { DialogHelp } from "./ui/dialog-help"
-import { DialogAgent } from "./component/dialog-agent"
+// GameCode: DialogAgent import removed (agent list dialog disabled).
 import { DialogSessionList } from "./component/dialog-session-list"
 import { DialogOpen, DialogOpenKey, moveOpenSession } from "./component/dialog-open"
 import { SessionTabs } from "./component/session-tabs"
@@ -104,7 +104,7 @@ import { PluginRoute, Slot } from "./plugin/render"
 import { CommandPaletteDialog } from "./component/command-palette"
 import { COMMAND_PALETTE_COMMAND, Keymap, type KeymapCommand } from "./context/keymap"
 
-import { DialogVariant } from "./component/dialog-variant"
+// GameCode: DialogVariant import removed (variant switching disabled).
 import { DialogSpeed } from "./component/dialog-speed"
 import { destroyRenderer, setTerminalTitle } from "./util/renderer"
 import { cliErrorMessage, errorFormat } from "./util/error"
@@ -151,18 +151,12 @@ const pinnedSessionBindingCommands = [
 
 const appBindingCommands = [
   "command.palette.show",
-  "model.list",
-  "model.cycle_recent",
-  "model.cycle_recent_reverse",
-  "model.cycle_favorite",
-  "model.cycle_favorite_reverse",
-  "agent.list",
+  // GameCode: model.list, model cycling, agent.list, and variant commands
+  // are removed (see the command definitions below).
   "mcp.list",
   "usage.show",
   "agent.cycle",
   "agent.cycle.reverse",
-  "variant.cycle",
-  "variant.list",
   "speed.cycle",
   "speed.list",
   "provider.connect",
@@ -919,61 +913,11 @@ function App() {
         enabled: sessionTabs.enabled,
         run: () => sessionTabs.selectIndex(i),
       })),
-      {
-        name: "model.list",
-        title: "Switch model",
-        suggested: true,
-        category: "Agent",
-        slash: { name: "models" },
-        run: () => {
-          dialog.replace(() => <DialogModel />)
-        },
-      },
-      {
-        name: "model.cycle_recent",
-        title: "Model cycle",
-        category: "Agent",
-        palette: undefined,
-        run: () => {
-          local.model.cycle(1)
-        },
-      },
-      {
-        name: "model.cycle_recent_reverse",
-        title: "Model cycle reverse",
-        category: "Agent",
-        palette: undefined,
-        run: () => {
-          local.model.cycle(-1)
-        },
-      },
-      {
-        name: "model.cycle_favorite",
-        title: "Favorite cycle",
-        category: "Agent",
-        palette: undefined,
-        run: () => {
-          local.model.cycleFavorite(1)
-        },
-      },
-      {
-        name: "model.cycle_favorite_reverse",
-        title: "Favorite cycle reverse",
-        category: "Agent",
-        palette: undefined,
-        run: () => {
-          local.model.cycleFavorite(-1)
-        },
-      },
-      {
-        name: "agent.list",
-        title: "Switch agent",
-        category: "Agent",
-        slash: { name: "agents" },
-        run: () => {
-          dialog.replace(() => <DialogAgent />)
-        },
-      },
+      // GameCode: model selection commands (model.list with slash "models",
+      // model cycling, favorite cycling) are removed. Each agent has a fixed
+      // model and agents switch only with Tab.
+      // GameCode: no agent list dialog. Agents switch only with Tab
+      // (agent.cycle below).
       {
         name: "usage.show",
         title: "View usage",
@@ -1001,31 +945,8 @@ function App() {
           local.agent.move(1)
         },
       },
-      {
-        name: "variant.cycle",
-        title: "Variant cycle",
-        category: "Agent",
-        run: () => {
-          local.model.variant.cycle()
-        },
-      },
-      {
-        name: "variant.list",
-        title: "Switch model variant",
-        category: "Agent",
-        palette: local.model.variant.list().length === 0 ? undefined : (true as const),
-        slash: { name: "variants", aliases: ["thinking", "effort"] },
-        run: () => {
-          if (local.model.variant.list().length === 0) {
-            return toast.show({
-              title: "No variants available",
-              message: "The current model does not support any variants.",
-              variant: "info",
-            })
-          }
-          dialog.replace(() => <DialogVariant />)
-        },
-      },
+      // GameCode: no variant cycling. Variants are fixed per agent.
+      // GameCode: the variant list dialog (slash "variants") is removed too.
       // Only for a model that has other speeds, so nothing about speeds shows for the rest.
       ...(local.model.speed.list().length > 0
         ? [

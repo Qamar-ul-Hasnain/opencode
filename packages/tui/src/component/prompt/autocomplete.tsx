@@ -413,25 +413,9 @@ export function Autocomplete(props: {
     return { options: [], failed: false, query: "", resolved: false }
   })
 
-  const agents = createMemo(() => {
-    return (data.location.agent.list() ?? [])
-      .filter((agent) => !agent.hidden && agent.mode !== "primary")
-      .map(
-        (agent): AutocompleteOption => ({
-          display: "@" + agent.id,
-          kind: "agent",
-          onSelect: () => {
-            insertPart(agent.id, {
-              type: "agent",
-              value: {
-                name: agent.id,
-                mention: { start: 0, end: 0, text: "" },
-              },
-            })
-          },
-        }),
-      )
-  })
+  // GameCode: @-mention agent calls are disabled. Agents switch only with
+  // Tab, so the mention autocomplete never offers agents.
+  const agents = createMemo((): AutocompleteOption[] => [])
 
   const skillOptions = createMemo(() =>
     (data.location.skill.list(location.current) ?? []).map(

@@ -2027,13 +2027,9 @@ function AssistantFooter(props: { message: SessionMessageAssistant }) {
   const data = useData()
   const local = useLocal()
   const theme = useTheme()
-  const model = createMemo(
-    () =>
-      ctx
-        .models()
-        .find((model) => model.providerID === props.message.model.providerID && model.id === props.message.model.id)
-        ?.name ?? `${props.message.model.providerID}/${props.message.model.id}`,
-  )
+  // GameCode: model and provider names are never shown. The footer label
+  // is the product name, not the model that answered.
+  const model = createMemo(() => "GameCode")
   const messages = createMemo(() => data.session.message.list(ctx.sessionID))
   const turn = () => ({ index: ctx.messageIndex(props.message.id), legacy: ctx.legacyTurns() })
   const duration = createMemo(() => SessionTurn.duration(messages(), props.message, turn()))
