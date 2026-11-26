@@ -8,7 +8,7 @@ Base project: OpenCode 2.4.0, from https://github.com/anomalyco/opencode (MIT Li
 
 ## Deliverables
 
-- GameCodeSetup.exe: Windows installer. The uninstaller (unins000.exe) is generated in the install folder by the installer.
+- GameCodeSetup-v2.exe: Windows installer. The uninstaller (unins000.exe) is generated in the install folder by the installer.
 - Source code: the GameCode fork, including the `gamecode` package folder described below.
 - This documentation guide.
 - Demo screenshots (15): agent switching with Tab (Agents 1-5), key gating (all 12 agents with a key, only Build and Plan without one), license states (missing and expired), and three guardrail refusals captured in the TUI on Nov 26, 2026 (off-topic weather question to Agent1, Python script request to Agent3, edit and build request to Agent5). The three guardrail screenshots were captured with the same temporary OpenRouter test config as the live guardrail tests, because the Zen free tier was still at its limit; the shipped config was restored afterwards and the restore was verified by SHA256 hash. Guardrail behaviour is also evidenced by the live test outputs recorded under Testing performed (Nov 26, 2026).
@@ -112,9 +112,9 @@ Why: signing the stamp makes the common cheat (editing the date in a text file) 
 
 ## Requirement 12: Windows .exe installer and uninstaller
 
-What: GameCodeSetup.exe, built with Inno Setup 6, and the uninstaller it generates (unins000.exe in the install folder). No .cmd, .bat, or .sh anywhere in the install path.
+What: GameCodeSetup-v2.exe, built with Inno Setup 6, and the uninstaller it generates (unins000.exe in the install folder). No .cmd, .bat, or .sh anywhere in the install path.
 
-How: the app is compiled to a standalone Windows binary with Bun (`bun run build` in packages/cli), so the runtime is bundled and there are no separate dependencies left for the installer to fetch. The installer is per-user (no admin), installs to %LOCALAPPDATA%\Programs\GameCode, places prompts.enc and the config with the program, places prompt.key in local app data, asks for the Zen key (Requirement 10), writes the license stamp (Requirement 11), and offers Start Menu and desktop shortcuts and an optional PATH entry. The uninstaller removes the program, the whole %LOCALAPPDATA%\GameCode data folder (key, stamp, credentials), and the PATH entry: a clean uninstall with nothing left behind.
+How: the app is compiled to a standalone Windows binary with Bun (`bun run build` in packages/cli), so the runtime is bundled and there are no separate dependencies left for the installer to fetch. The installer is per-user (no admin), installs to %LOCALAPPDATA%\Programs\GameCode, places prompts.enc and the config with the program, places prompt.key in local app data, asks for the Zen key (Requirement 10), writes the license stamp (Requirement 11), and offers Start Menu and desktop shortcuts and an optional PATH entry. The uninstaller removes the program, the whole %LOCALAPPDATA%\GameCode data folder (key, stamp, credentials), and the PATH entry: a clean uninstall (one disclosed exception: a just-run gamecode.exe can be locked by Windows and left behind until it is deleted manually or the machine restarts; see Testing performed).
 
 Why: Inno Setup produces a real, signed-able Windows installer with a correct uninstaller, and a per-user install keeps the demo friction at zero.
 
