@@ -11,7 +11,7 @@ Base project: OpenCode 2.4.0, from https://github.com/anomalyco/opencode (MIT Li
 - GameCodeSetup.exe: Windows installer. The uninstaller (unins000.exe) is generated in the install folder by the installer.
 - Source code: the GameCode fork, including the `gamecode` package folder described below.
 - This documentation guide.
-- Demo screenshots (12): agent switching with Tab (Agents 1-5), key gating (all 12 agents with a key, only Build and Plan without one), and license states (missing and expired). Guardrail behaviour is evidenced by the live test outputs recorded under Testing performed (Nov 26, 2026).
+- Demo screenshots (15): agent switching with Tab (Agents 1-5), key gating (all 12 agents with a key, only Build and Plan without one), license states (missing and expired), and three guardrail refusals captured in the TUI on Nov 26, 2026 (off-topic weather question to Agent1, Python script request to Agent3, edit and build request to Agent5). The three guardrail screenshots were captured with the same temporary OpenRouter test config as the live guardrail tests, because the Zen free tier was still at its limit; the shipped config was restored afterwards and the restore was verified by SHA256 hash. Guardrail behaviour is also evidenced by the live test outputs recorded under Testing performed (Nov 26, 2026).
 
 ## Requirement 1: Fork OpenCode and rebrand it as GameCode
 
