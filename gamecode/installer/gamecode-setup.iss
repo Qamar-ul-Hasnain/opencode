@@ -24,7 +24,7 @@ DefaultGroupName=GameCode
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=Output
-OutputBaseFilename=GameCodeSetup
+OutputBaseFilename=GameCodeSetup-v2
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -51,6 +51,9 @@ Source: "dist\opencode.jsonc"; DestDir: "{%USERPROFILE}\.config\opencode"; Flags
 ; The prompt key goes to per-user app data, outside the program folder and
 ; outside any source repo.
 Source: "dist\prompt.key"; DestDir: "{localappdata}\GameCode"; Flags: ignoreversion
+; Imported third-party skills (Apache License 2.0, see gamecode CREDITS.md)
+; land beside the global config, where the skills.paths entry in opencode.jsonc finds them.
+Source: "dist\skills\*"; DestDir: "{%USERPROFILE}\.config\opencode\skills"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\GameCode"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{userdocs}"
@@ -72,6 +75,12 @@ Filename: "{app}\{#MyAppExeName}"; Description: "Launch GameCode"; Flags: nowait
 Type: filesandordirs; Name: "{localappdata}\GameCode"
 ; Also remove the global config copy placed at install time.
 Type: files; Name: "{%USERPROFILE}\.config\opencode\opencode.jsonc"
+; Remove the imported skills installed by this package.
+Type: filesandordirs; Name: "{%USERPROFILE}\.config\opencode\skills\unity-csharp-scripting"
+Type: filesandordirs; Name: "{%USERPROFILE}\.config\opencode\skills\unity-physics"
+Type: filesandordirs; Name: "{%USERPROFILE}\.config\opencode\skills\unreal-cpp-gameplay"
+Type: filesandordirs; Name: "{%USERPROFILE}\.config\opencode\skills\unreal-behavior-trees"
+Type: files; Name: "{%USERPROFILE}\.config\opencode\skills\UPSTREAM-LICENSE.txt"
 
 [Code]
 var

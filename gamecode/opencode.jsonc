@@ -15,6 +15,17 @@
       }
     }
   },
+  "mcp": {
+    "servers": {
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp"
+      }
+    }
+  },
+  "skills": {
+    "paths": ["~/.config/opencode/skills"]
+  },
   "agents": {
     "agent1": {
       "description": "Unity gameplay programming in C#. Writes and edits Unity C# scripts, MonoBehaviour logic, and gameplay systems.",
