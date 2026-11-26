@@ -1556,12 +1556,11 @@ export function Prompt(props: PromptProps) {
       if (loading && !failed) return previous
 
       const agent = local.agent.current()
-      const model = local.model.parsed()
       return {
         agentLabel: agent ? Locale.titlecase(agent.id) : undefined,
         agentColor: agent ? local.agent.color(agent.id) : undefined,
-        modelLabel: model.model,
-        providerLabel: model.provider,
+        modelLabel: "GameCode",
+        providerLabel: "",
         variant: local.model.variant.current(),
         speed: local.model.speed.current(),
       }
@@ -1569,8 +1568,8 @@ export function Prompt(props: PromptProps) {
     {
       agentLabel: undefined,
       agentColor: undefined,
-      modelLabel: local.model.parsed().model,
-      providerLabel: local.model.parsed().provider,
+      modelLabel: "GameCode",
+      providerLabel: "",
       variant: undefined,
       speed: undefined,
     },

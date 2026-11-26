@@ -4,14 +4,14 @@ GameCode is a rebranded fork of the open-source OpenCode coding agent, specialis
 
 Base project: OpenCode 2.4.0, from https://github.com/anomalyco/opencode (MIT License, see Credits).
 
-> Draft status (working copy, Nov 23, 2026): the config, the encrypted prompt bundle, the license and gating module, and the installer script are built and unit-tested. The source-level wiring inside the fork (prompt loader hook, model list removal, branding strings, install stamp flag) is completed and verified during the build and test run on Nov 24, 2026, and this note is removed from the submitted copy.
+> Status (Nov 26, 2026): build complete and verified Nov 24-25, 2026 (see Testing performed). The 7 live guardrail conversation tests are still open: the OpenCode Zen free tier returned Free usage limit reached (429) on every probe from Nov 24 to Nov 26, and the limit resets on Nov 27, 2026 at 05:00 PKT. The guardrail results will be added after that reset. Nothing in this guide claims a live test that has not run.
 
 ## Deliverables
 
 - GameCodeSetup.exe: Windows installer. The uninstaller (unins000.exe) is generated in the install folder by the installer.
 - Source code: the GameCode fork, including the `gamecode` package folder described below.
 - This documentation guide.
-- Demo video or screenshots: agent switching with Tab, guardrail refusals, key gating, and license expiry.
+- Demo screenshots (12): agent switching with Tab (Agents 1-5), key gating (all 12 agents with a key, only Build and Plan without one), and license states (missing and expired). Guardrail refusal screenshots are pending the Zen free-limit reset on Nov 27, 2026 at 05:00 PKT; see Testing performed.
 
 ## Requirement 1: Fork OpenCode and rebrand it as GameCode
 
@@ -133,9 +133,10 @@ What: this guide covers every requirement with what, how, and why, states the en
 ## Testing performed
 
 - Encryption: prompts.enc roundtrip verified for all 10 agents; the bundle contains no readable prompt text; the loader returns the correct prompt per agent and clears the previous one on switch; an unknown agent ID is rejected.
-- License and gating: verified end to end on the real compiled Windows binary (Nov 24, 2026). No stamp: the app refuses to start ("license: missing"). After the install stamp is written: the app runs. Stamp dated 3 days back: the app refuses to start ("license: expired"). Hand-edited stamp: rejected as tampered. With a workspace key file present, `debug agents` lists all 5 custom agents and their 5 subagents alongside Build and Plan; with the key file removed, only Build and Plan are registered.
-- Guardrails: the 7 cases in Requirement 7 run against the live build during the test session, with pass or fail recorded per case.
-- Installer: silent install and uninstall cycle verified on Windows (Nov 24, 2026). Install places the program, writes the license stamp, installs the prompt key into the per-user data folder, copies the config into the per-user global config folder, and with a blank key the installed app exposes only Build and Plan. Uninstall removes the program files, the per-user data folder, and the global config copy. Note: if the app was running moments before uninstalling, Windows can hold the main executable briefly; the uninstaller then leaves that one file to be removed on the next sign-in or reboot, which is standard Inno Setup behaviour for locked files.
+- License and gating: verified end to end on the real compiled Windows binary (Nov 24, 2026, re-verified with the rebuilt binary on Nov 25, 2026). No stamp: the app refuses to start ("license: missing"). After the install stamp is written: the app runs. Stamp dated 3 days back: the app refuses to start ("license: expired"). Hand-edited stamp: rejected as tampered. With a workspace key file present, `debug agents` lists all 5 custom agents and their 5 subagents alongside Build and Plan; with the key file removed, only Build and Plan are registered.
+- Rebuild (Nov 25, 2026): the TUI prompt footer now shows only the agent name and GameCode (no model or provider names), the logo spells GAMECODE, and the terminal title reads GameCode; typecheck clean, binary rebuilt and hash-verified, key gating re-verified (no key: only Build and Plan; with key: all 12 agents).
+- Guardrails: NOT yet verified live. The 7 cases in Requirement 7 (two off-topic questions, a wrong-language request, a direct injection, an injection hidden in pasted content, the Tab hand-off, and an edit request to Agent5) are defined and ready, but every live attempt was blocked by the OpenCode Zen free tier: Free usage limit reached (429, FreeUsageLimitError) on Nov 24, Nov 25, and Nov 26, 2026 (probes at 05:07 and 05:15 PKT on Nov 26; the error Retry-After value puts the reset at Nov 27, 2026, 05:00 PKT). One early attempt of test 1 on Nov 24 hung with no output. What is verified without a live model call: the guardrail block is identical in all 5 primary prompts; the encrypted bundle roundtrips for all 10 agents; Agent5 and Plan cannot edit files or run commands (denied in both config permissions and prompt text). The live pass/fail per case will be recorded here after the Nov 27 reset.
+- Installer: silent install and uninstall cycle verified on Windows (Nov 24, 2026, and repeated with the rebuilt binary on Nov 25, 2026). Install places the program, writes the license stamp, installs the prompt key into the per-user data folder, copies the config into the per-user global config folder, and with a blank key the installed app exposes only Build and Plan. Uninstall removes the program files, the per-user data folder, and the global config copy. Note: if the app was running moments before uninstalling, Windows can hold the main executable briefly; the uninstaller then leaves that one file to be removed on the next sign-in or reboot, which is standard Inno Setup behaviour for locked files.
 
 ## Credits
 
