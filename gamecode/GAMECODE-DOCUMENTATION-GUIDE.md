@@ -26,9 +26,9 @@ Why: a rebrand should be complete where it is visible and safe where it is struc
 
 What: the built-in Build and Plan agents remain. Five custom primary agents are added, each with its own default free OpenCode Zen model and its own subagent:
 
-- Agent1, Unity C# gameplay: DeepSeek v4.1 Flash (free). Subagent agent1-helper: GLM 5.3 Flash (free).
+- Agent1, Unity C# gameplay: DeepSeek v4.1 Flash (free). Subagent agent1-helper: hy4-flash-free.
 - Agent2, Unreal C++ gameplay: MiMo v2.6 Flash (free). Subagent agent2-helper: Big Pickle (free).
-- Agent3, gameplay systems and game AI: GLM 5.3 Flash (free). Subagent agent3-helper: DeepSeek v4.1 Flash (free).
+- Agent3, gameplay systems and game AI: hy4-flash-free. Subagent agent3-helper: DeepSeek v4.1 Flash (free).
 - Agent4, code review and performance: Nemotron 3.5 Lightning (free). Subagent agent4-helper runs on the outside-provider model (Requirement 3).
 - Agent5, build and test planning: Beam (free). Subagent agent5-helper: Flint 40B (free).
 
@@ -38,7 +38,7 @@ Why: distinct free models per agent keep the demo cost at zero while showing tha
 
 ## Requirement 3: Model and provider names hidden, one outside-provider free model added
 
-What: the user never sees model or provider names in the interface, and one free model from an outside provider works alongside the Zen models: agent4-helper runs on OpenRouter (google/gemini-2.5-flash:free, with meta-llama/llama-4-maverick:free as fallback), its key read from the OPENROUTER_API_KEY environment variable.
+What: the user never sees model or provider names in the interface, and one free model from an outside provider works alongside the Zen models: agent4-helper runs on OpenRouter (google/gemini-2.5-flash:free), its key read from the OPENROUTER_API_KEY environment variable.
 
 How: on the config side, the model list and model cycling keybinds are disabled (Requirement 9). On the source side, the TUI surfaces that print model or provider names (session header, usage and footer components) are patched to show the agent name only. The OpenRouter model is declared through the standard provider block in opencode.jsonc, so it behaves like any other model at runtime while staying invisible in the UI.
 
@@ -56,7 +56,7 @@ Why: one shared guardrail block means the safety behaviour is identical across a
 
 What: system prompts are stored in a single encrypted bundle, prompts.enc. They never appear in opencode.json and never in plain-text agent .md files. At runtime only the active agent's prompt is decrypted, into memory; when the user switches agents, the previous prompt is cleared from memory before the next one is decrypted.
 
-How: AES-256-GCM, one random IV and one authentication tag per agent entry, so one entry cannot be swapped or tampered with silently. A small loader (prompt-loader) holds at most one decrypted prompt at a time: on an agent switch it drops the cached prompt first, then decrypts the newly active agent's entry. The loader is wired into the place where the fork assembles the system prompt for a session (packages/core/src/session/system-prompt.ts). The decryption key (prompt.key) is stored in the user's local app data folder. It is not in the source repo, not in opencode.json, and not in the program folder.
+How: AES-256-GCM, one random IV and one authentication tag per agent entry, so one entry cannot be swapped or tampered with silently. A small loader (prompt-loader) holds at most one decrypted prompt at a time: on an agent switch it drops the cached prompt first, then decrypts the newly active agent's entry. The loader lives in packages/core/src/gamecode/prompt-loader.ts and is wired into the place where the fork assembles the system prompt for a model request (packages/core/src/session/model-request.ts). The decryption key (prompt.key) is stored in the user's local app data folder. It is not in the source repo, not in opencode.json, and not in the program folder.
 
 Why: GCM gives confidentiality and tamper evidence in one primitive. One bundle with per-entry IVs is simple to install and audit, and the one-prompt-at-a-time loader matches the requirement's memory rule exactly.
 
@@ -124,7 +124,7 @@ What: this guide covers every requirement with what, how, and why, states the en
 
 ## Assumptions
 
-- The deadline for submission is November 25, 2026, as updated by the candidate's instructions during the task window.
+- The deadline for submission is November 27, 2026 (midnight), as confirmed in the task giver's follow-up email of November 26, 2026.
 - "Free model" means a model listed as free on OpenCode Zen or OpenRouter at build time; because free lists change frequently, exact model IDs are re-verified on the build machine and may differ from early drafts of this guide.
 - The 2-day license is counted from installation time (when the installer writes the stamp), not from first launch.
 - A "valid key" for gating means a key for a dedicated OpenCode Console / Zen workspace that the app can resolve at startup; the key is the user's own and is never part of the submitted source.
